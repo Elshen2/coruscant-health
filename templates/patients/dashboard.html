@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}Xəstə Paneli{% endblock %}
+
+{% block content %}
+<style>
+    .clickable-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+        text-decoration: none !important;
+        display: block;
+    }
+    .clickable-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+</style>
+
+<h4 class="fw-bold mb-4">
+    <i class="bi bi-person-heart text-primary me-2"></i>
+    Salam, {{ request.user.get_full_name }}!
+</h4>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <a href="{% url 'my_records' %}" class="card stat-card blue p-3 clickable-card shadow-sm border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Sağlamlıq qeydləri</div>
+                    <div class="fs-3 fw-bold text-primary mt-1">{{ records_count }}</div>
+                </div>
+                <i class="bi bi-activity text-primary" style="font-size:2rem"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{% url 'my_reports' %}" class="card stat-card green p-3 clickable-card shadow-sm border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Həkim hesabatları</div>
+                    <div class="fs-3 fw-bold text-success mt-1">{{ reports_count }}</div>
+                </div>
+                <i class="bi bi-file-medical text-success" style="font-size:2rem"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{% url 'upload_record' %}" class="card stat-card orange p-3 clickable-card shadow-sm border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Sürətli əməliyyat</div>
+                    <div class="fs-6 fw-bold text-warning mt-2">
+                        <i class="bi bi-plus-circle-fill me-1"></i>Məlumat yüklə
+                    </div>
+                </div>
+                <i class="bi bi-upload text-warning" style="font-size:2rem"></i>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm border-0">
+            <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2 text-primary"></i>Son qeydlər</h6>
+            {% for r in recent_records %}
+            <div class="d-flex justify-content-between border-bottom py-2 align-items-center">
+                <span class="small">
+                    <i class="bi bi-heart-pulse text-danger me-1"></i><strong>{{ r.heart_rate }}</strong> bpm
+                    &nbsp;|&nbsp;
+                    <i class="bi bi-thermometer text-warning me-1"></i><strong>{{ r.temperature }}</strong>°C
+                </span>
+                <span class="text-muted small">{{ r.recorded_at|date:"d.m.Y" }}</span>
+            </div>
+            {% empty %}
+            <p class="text-muted small my-3">Hələ qeyd yoxdur.</p>
+            {% endfor %}
+            <div class="mt-3 d-flex gap-2">
+                <a href="{% url 'upload_record' %}" class="btn btn-primary btn-sm px-3">
+                    <i class="bi bi-plus-circle me-1"></i>Yeni qeyd
+                </a>
+                <a href="{% url 'my_records' %}" class="btn btn-outline-secondary btn-sm px-3">Hamısı</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm border-0">
+            <h6 class="fw-bold mb-3"><i class="bi bi-file-earmark-medical me-2 text-success"></i>Son hesabatlar</h6>
+            {% for r in recent_reports %}
+            <div class="d-flex justify-content-between border-bottom py-2 align-items-center">
+                <span class="small fw-semibold text-dark">{{ r.title }}</span>
+                <span class="text-muted small">{{ r.created_at|date:"d.m.Y" }}</span>
+            </div>
+            {% empty %}
+            <p class="text-muted small my-3">Hələ hesabat yoxdur.</p>
+            {% endfor %}
+            <div class="mt-3">
+                <a href="{% url 'my_reports' %}" class="btn btn-outline-secondary btn-sm px-3">Hamısı</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

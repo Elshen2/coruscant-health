@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Giriş{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper" style="margin:-1.5rem;padding:2rem;">
+    <div class="auth-card bg-white shadow-lg">
+        <div class="text-center mb-4">
+            <i class="bi bi-heart-pulse-fill text-primary" style="font-size:2.5rem"></i>
+            <h4 class="fw-bold mt-2">Coruscant Health</h4>
+            <p class="text-muted small">Tibbi İdarəetmə Sistemi</p>
+        </div>
+
+        {% for message in messages %}
+        <div class="alert alert-warning">{{ message }}</div>
+        {% endfor %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">İstifadəçi adı</label>
+                {{ form.username }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Şifrə</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Daxil ol
+            </button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'password_reset' %}" class="text-muted small" style="text-decoration: none;">Şifrəni unutmusunuz?</a>
+        </div>
+
+        <hr>
+        <p class="text-center text-muted small mb-0">
+            Hesabınız yoxdur?
+            <a href="{% url 'register' %}" class="text-primary fw-semibold">Qeydiyyat</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

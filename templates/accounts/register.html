@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Qeydiyyat{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <div class="text-center mb-3">
+                <i class="bi bi-person-plus-fill text-primary" style="font-size:2rem"></i>
+                <h5 class="fw-bold mt-2">Yeni hesab yarat</h5>
+                <p class="text-muted small">Admin təsdiqindən sonra giriş əldə edəcəksiniz</p>
+            </div>
+
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                Zəhmət olmasa xətaları düzəldin.
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-6">
+                        <label class="form-label fw-semibold">Ad</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label fw-semibold">Soyad</label>
+                        {{ form.last_name }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">İstifadəçi adı</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Telefon</label>
+                        {{ form.phone }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Rol</label>
+                        {{ form.role }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Şifrə</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Şifrə təkrar</label>
+                        {{ form.password_confirm }}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-4 py-2 fw-semibold">
+                    <i class="bi bi-check-circle me-2"></i>Qeydiyyatdan keç
+                </button>
+            </form>
+            <p class="text-center text-muted small mt-3 mb-0">
+                Hesabınız var? <a href="{% url 'login' %}">Daxil ol</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

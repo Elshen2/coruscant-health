@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Həkim Paneli{% endblock %}
+
+{% block content %}
+<style>
+    .clickable-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+        text-decoration: none !important;
+        display: block;
+    }
+    .clickable-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+</style>
+
+<h4 class="fw-bold mb-4">
+    <i class="bi bi-hospital text-primary me-2"></i>
+    Dr. {{ request.user.get_full_name }}
+</h4>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <a href="{% url 'doctor_patient_list' %}" class="card stat-card blue p-3 clickable-card shadow-sm border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Xəstələr</div>
+                    <div class="fs-3 fw-bold text-primary mt-1">{{ patients_count }}</div>
+                </div>
+                <i class="bi bi-people text-primary" style="font-size:2rem"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{% url 'doctor_patient_list' %}" class="card stat-card green p-3 clickable-card shadow-sm border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Hesabatlar</div>
+                    <div class="fs-3 fw-bold text-success mt-1">{{ reports_count }}</div>
+                </div>
+                <i class="bi bi-file-medical text-success" style="font-size:2rem"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{% url 'doctor_orders' %}" class="card stat-card orange p-3 clickable-card shadow-sm border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Gözləyən sifarişlər</div>
+                    <div class="fs-3 fw-bold text-warning mt-1">{{ orders_count }}</div>
+                </div>
+                <i class="bi bi-clipboard2-pulse text-warning" style="font-size:2rem"></i>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-7">
+        <div class="card p-3 shadow-sm border-0">
+            <h6 class="fw-bold mb-3"><i class="bi bi-people me-2 text-primary"></i>Xəstələr</h6>
+            {% for p in recent_patients %}
+            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                <div>
+                    <span class="fw-semibold small text-dark">{{ p.get_full_name }}</span>
+                    <span class="text-muted small ms-2">@{{ p.username }}</span>
+                </div>
+                <a href="{% url 'patient_detail' p.id %}" class="btn btn-sm btn-outline-primary px-3">
+                    <i class="bi bi-eye me-1"></i>Bax
+                </a>
+            </div>
+            {% empty %}
+            <p class="text-muted small my-3">Xəstə yoxdur.</p>
+            {% endfor %}
+            <div class="mt-3">
+                <a href="{% url 'doctor_patient_list' %}" class="btn btn-primary btn-sm px-3">
+                    Bütün xəstələr
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card p-3 shadow-sm border-0">
+            <h6 class="fw-bold mb-3"><i class="bi bi-clipboard2 me-2 text-warning"></i>Gözləyən sifarişlər</h6>
+            {% for o in pending_orders %}
+            <div class="border-bottom py-2">
+                <div class="small fw-semibold text-dark">{{ o.get_service_type_display }}</div>
+                <div class="text-muted small">{{ o.patient.get_full_name }}</div>
+            </div>
+            {% empty %}
+            <p class="text-muted small my-3">Gözləyən sifariş yoxdur.</p>
+            {% endfor %}
+            <div class="mt-3">
+                <a href="{% url 'doctor_orders' %}" class="btn btn-outline-secondary btn-sm px-3">Hamısı</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

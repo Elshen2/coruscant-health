@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Xəstələr{% endblock %}
+{% block content %}
+<h4 class="fw-bold mb-4"><i class="bi bi-people text-primary me-2"></i>Xəstələr siyahısı</h4>
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr><th>Ad Soyad</th><th>Username</th><th>Email</th><th>Əməliyyat</th></tr>
+            </thead>
+            <tbody>
+                {% for p in patients %}
+                <tr>
+                    <td class="fw-semibold">{{ p.get_full_name }}</td>
+                    <td class="text-muted">@{{ p.username }}</td>
+                    <td>{{ p.email }}</td>
+                    <td>
+                        <a href="{% url 'patient_detail' p.id %}" class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-eye me-1"></i>Bax
+                        </a>
+                        <a href="{% url 'create_order' p.id %}" class="btn btn-sm btn-outline-warning">
+                            <i class="bi bi-clipboard2-plus me-1"></i>Sifariş
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted py-4">Xəstə yoxdur.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <div>
+            <h2 class="fw-bold text-dark m-0">Təcili Yardım İdarəetmə Paneli</h2>
+            <p class="text-muted m-0">Coruscant Sağlamlıq Administrasiyası — Sürətli Qəbul Sistemi</p>
+        </div>
+        <div>
+            <span class="badge bg-danger p-2 fs-6">
+                <i class="fas fa-ambulance me-2"></i> Canlı Rejim
+            </span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-dark text-white p-3 rounded-top-4">
+                    <h5 class="card-title m-0 fw-semibold">
+                        <i class="fas fa-user-plus me-2 text-danger"></i> Sürətli Xəstə Qəbulu
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{% url 'emergency_dashboard' %}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-medium text-dark">Adı və Soyadı</label>
+                            <input type="text" name="full_name" class="form-control form-control-lg bg-light" placeholder="Məs: Kamal Əliyev" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-medium text-dark">Təvəllüd / Doğum Tarixi</label>
+                            <input type="date" name="birth_date" class="form-control bg-light" required>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium text-dark">Qan Qrupu</label>
+                                <select name="blood_group" class="form-select bg-light">
+                                    <option value="">Seçin...</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium text-dark">Təcililik Dərəcəsi</label>
+                                <select name="urgency_level" class="form-select bg-light text-dark fw-bold" style="border: 2px solid #198754; transition: all 0.3s ease;" onchange="updateUrgencyStyle(this)">
+                                    <option value="normal" class="text-success fw-bold" selected>🟢 Normal (Yaşıl)</option>
+                                    <option value="high" class="text-warning fw-bold">🟡 Yüksək (Sarı)</option>
+                                    <option value="critical" class="text-danger fw-bold">🔴 Kritik (Qırmızı)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-medium text-dark">İlkin Simptomlar / Qeyd</label>
+                            <textarea name="symptoms" class="form-control bg-light" rows="3" placeholder="Xəstənin gətirilmə səbəbi və vəziyyəti barədə qısa qeyd..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger w-100 btn-lg rounded-3 fw-bold shadow-sm">
+                            <i class="fas fa-check-circle me-2"></i> Sistemə Daxil Et və Göndər
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-light border-start border-danger border-4">
+                        <div class="text-muted small fw-medium">Sistemdəki Ümumi Xəstə</div>
+                        <div class="fs-3 fw-bold text-dark mt-1">{{ today_count }} Xəstə</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-light border-start border-warning border-4">
+                        <div class="text-muted small fw-medium">Gözləyən Analizlərdəki Hesabatlar</div>
+                        <div class="fs-3 fw-bold text-dark mt-1">{{ pending_orders_count }} Sifariş</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white p-3 border-bottom d-flex justify-content-between align-items-center rounded-top-4">
+                    <h5 class="card-title m-0 fw-semibold text-dark">
+                        <i class="fas fa-clock me-2 text-secondary"></i> Son Qəbul Edilən Xəstələr
+                    </h5>
+                    <a href="{% url 'doctor_patient_list' %}" class="btn btn-sm btn-outline-secondary rounded-pill">Hamısını Gör</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0 text-nowrap">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Xəstə</th>
+                                    <th>Qan Qrupu</th>
+                                    <th>Doğum Tarixi</th>
+                                    <th class="pe-4 text-end">Status</th>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                {% for profile in profiles %}
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-semibold text-dark">{{ profile.user.get_full_name }}</div>
+                                        <div class="text-muted small">@{{ profile.user.username }}</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{% if profile.blood_type %}{{ profile.blood_type }}{% else %}--{% endif %}</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">{% if profile.date_of_birth %}{{ profile.date_of_birth }}{% else %}--{% endif %}</span>
+                                    </td>
+                                    <td class="pe-4 text-end">
+                                        <span class="badge bg-success">Qeydiyyatdadır</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        <i class="fas fa-folder-open mb-2 d-block fs-3"></i> Hələ heç bir xəstə daxil edilməyib.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateUrgencyStyle(selectElement) {
+    const value = selectElement.value;
+    if (value === 'normal') {
+        selectElement.style.borderColor = '#198754';
+        selectElement.style.boxShadow = '0 0 0 0.25rem rgba(25, 135, 84, 0.25)';
+    } else if (value === 'high') {
+        selectElement.style.borderColor = '#ffc107';
+        selectElement.style.boxShadow = '0 0 0 0.25rem rgba(255, 193, 7, 0.25)';
+    } else if (value === 'critical') {
+        selectElement.style.borderColor = '#dc3545';
+        selectElement.style.boxShadow = '0 0 0 0.25rem rgba(220, 53, 69, 0.25)';
+    }
+}
+</script>
+{% endblock %}

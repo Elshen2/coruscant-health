@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Sənəd Yüklə{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-upload text-primary me-2"></i>Sənəd yüklə</h5>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Başlıq</label>
+                    {{ form.title }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Növ</label>
+                    {{ form.document_type }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Fayl</label>
+                    {{ form.file }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-upload me-2"></i>Yüklə
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

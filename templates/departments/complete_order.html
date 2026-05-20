@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Sifarişi Tamamla{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-1">{{ order.get_service_type_display }}</h5>
+            <p class="text-muted small mb-3">Xəstə: {{ order.patient.get_full_name }}</p>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nəticə</label>
+                    <textarea name="result" class="form-control" rows="4"
+                        placeholder="Nəticəni buraya yazın..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nəticə faylı (optional)</label>
+                    <input type="file" name="result_file" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-check-circle me-2"></i>Tamamlandı olaraq işarələ
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

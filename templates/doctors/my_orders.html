@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Sifarişlərim{% endblock %}
+{% block content %}
+<h4 class="fw-bold mb-4"><i class="bi bi-clipboard2-pulse text-primary me-2"></i>Sifarişlərim</h4>
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr><th>Xəstə</th><th>Xidmət</th><th>Status</th><th>Tarix</th></tr>
+            </thead>
+            <tbody>
+                {% for o in orders %}
+                <tr>
+                    <td>{{ o.patient.get_full_name }}</td>
+                    <td>{{ o.get_service_type_display }}</td>
+                    <td><span class="status-{{ o.status }}">{{ o.get_status_display }}</span></td>
+                    <td>{{ o.created_at|date:"d.m.Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted py-4">Sifariş yoxdur.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
