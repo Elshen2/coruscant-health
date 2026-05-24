@@ -12,7 +12,7 @@ ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
-    'coruscant-health-production-95cf.up.railway.app',
+    'https://coruscant-health-production-95cf.up.railway.app',
 ]
 
 INSTALLED_APPS = [
