@@ -1,16 +1,14 @@
 import os
-from pathlib import Path
 import dj_database_url
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure--qo4i2t7@u*!(feoum%_e1*59*43jqx3lcfw*o@@l)l%!l3hwv')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-only-key')
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
-
-CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,8 +61,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600
+        default=os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}')
     )
 }
 
@@ -83,7 +80,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -97,3 +93,5 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
